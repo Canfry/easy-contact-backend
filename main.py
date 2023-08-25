@@ -1,9 +1,25 @@
 from typing import Annotated
 from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 import csv
 import codecs
 
 app = FastAPI()
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 async def root():
@@ -12,10 +28,9 @@ async def root():
 @app.post("/files/upload")
 async def create_file(file: UploadFile = File(...)):
     reader = csv.DictReader(codecs.iterdecode(file.file, 'utf-8'))
-    data = {}
+    data = []
     for row in reader:
-        key = row["First Name"]
-        data[key] = row
+        data.append(row)
         print(row["First Name"], row["Mobile Phone"])
 
     file.file.close()

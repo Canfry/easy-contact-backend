@@ -31,7 +31,7 @@ async def create_file(file: UploadFile = File(...)):
     data = []
     for row in reader:
         data.append(row)
-        print(row["First Name"], row["Mobile Phone"])
+        print(data)
 
     file.file.close()
     return data
